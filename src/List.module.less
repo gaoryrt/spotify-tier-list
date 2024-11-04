@@ -13,11 +13,13 @@
   height: 100px;
   width: 100px;
   flex-shrink: 0;
+  margin-right: 8px;
 }
 
 .blocklist {
   display: flex;
   flex-wrap: nowrap;
+  min-width: 100%;
 }
 
 .block {
@@ -26,6 +28,10 @@
   height: 100px;
   width: 100px;
   display: block;
+  cursor: pointer; /* Pointer cursor for interactivity */
+  &:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Deeper shadow on hover */
+  }
   img {
     position: absolute;
     height: 86px;
