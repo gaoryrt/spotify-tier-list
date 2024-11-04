@@ -1,7 +1,7 @@
 import styles from "./List.module.less";
 import { data, Ranks } from "./env";
 import React, { useState } from "react";
-
+import dayjs from "dayjs";
 import { ReactSortable } from "react-sortablejs";
 
 interface ItemType {
@@ -36,16 +36,23 @@ const LIST: { rank: Ranks; color: string }[] = [
   },
 ];
 
+const today = dayjs();
+
 export function List() {
   const [tracks, setTracks] = useState({
-    F: data.tracks.items.map((o) => {
-      const t = o.track;
-      return {
-        name: t.name,
-        artist: t.artists.map((a) => a.name).join(", "),
-        cover: t.album.images[0].url,
-      };
-    }),
+    F: data.tracks.items
+      .filter((o) => {
+        // only keep tracks released in the last 90 days
+        return today.diff(dayjs(o.track.album.release_date), "day") < 90;
+      })
+      .map((o) => {
+        const t = o.track;
+        return {
+          name: t.name,
+          artist: t.artists.map((a) => a.name).join(", "),
+          cover: t.album.images[0].url,
+        };
+      }),
   });
   return LIST.map((o) => (
     <div className={styles.tierlist} key={o.rank}>
