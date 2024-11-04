@@ -15,7 +15,8 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-sortablejs": "^6.1.4",
-    "sortablejs": "^1.15.2"
+    "sortablejs": "^1.15.2",
+    "url-param": "^1.2.10"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",

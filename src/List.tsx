@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { ReactSortable } from "react-sortablejs";
 import axios from "axios";
+import { u } from "url-param";
 
 interface ItemType {
   id: number;
@@ -41,8 +42,9 @@ const today = dayjs();
 
 export function List() {
   useEffect(() => {
-    const playlist_id = window.prompt("Enter the playlist id");
-    const Bearer = window.prompt("Enter the Bearer token");
+    const playlist_id =
+      u("playlist_id") || window.prompt("Enter the playlist id");
+    const Bearer = u("bearer") || window.prompt("Enter the Bearer token");
     axios
       .get(`https://api.spotify.com/v1/playlists/${playlist_id}`, {
         headers: {
