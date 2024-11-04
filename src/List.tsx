@@ -1,8 +1,9 @@
 import styles from "./List.module.less";
-import { data, Ranks } from "./env";
-import React, { useState } from "react";
+import { Ranks } from "./env";
+import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { ReactSortable } from "react-sortablejs";
+import axios from "axios";
 
 interface ItemType {
   id: number;
@@ -39,21 +40,41 @@ const LIST: { rank: Ranks; color: string }[] = [
 const today = dayjs();
 
 export function List() {
-  const [tracks, setTracks] = useState({
-    F: data.tracks.items
-      .filter((o) => {
-        // only keep tracks released in the last 90 days
-        return today.diff(dayjs(o.track.album.release_date), "day") < 90;
+  useEffect(() => {
+    const playlist_id = window.prompt("Enter the playlist id");
+    const Bearer = window.prompt("Enter the Bearer token");
+    axios
+      .get(`https://api.spotify.com/v1/playlists/${playlist_id}`, {
+        headers: {
+          Authorization: `Bearer ${Bearer}`,
+        },
       })
-      .map((o) => {
-        const t = o.track;
-        return {
-          name: t.name,
-          artist: t.artists.map((a) => a.name).join(", "),
-          cover: t.album.images[0].url,
-        };
-      }),
-  });
+      .then(
+        ({ data }) => {
+          setTracks({
+            F: data.tracks.items
+              .filter((o) => {
+                // only keep tracks released in the last 90 days
+                return (
+                  today.diff(dayjs(o.track.album.release_date), "day") < 90
+                );
+              })
+              .map((o) => {
+                const t = o.track;
+                return {
+                  name: t.name,
+                  artist: t.artists.map((a) => a.name).join(", "),
+                  cover: t.album.images[0].url,
+                };
+              }),
+          });
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+  }, []);
+  const [tracks, setTracks] = useState({});
   return LIST.map((o) => (
     <div className={styles.tierlist} key={o.rank}>
       <div className={styles.title} style={{ background: o.color }}>
